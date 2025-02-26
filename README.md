@@ -169,7 +169,7 @@ DASH_API_KEY=your_key python generate.py  --task t2v-14B --size 1280*720 --ckpt_
 python generate.py  --task t2v-14B --size 1280*720 --ckpt_dir ./Wan2.1-T2V-14B --prompt "Two anthropomorphic cats in comfy boxing gear and bright gloves fight intensely on a spotlighted stage" --use_prompt_extend --prompt_extend_method 'local_qwen' --prompt_extend_target_lang 'ch'
 ```
 
-##### (3) Runing local gradio
+##### (3) Running local gradio
 
 ```
 cd gradio
