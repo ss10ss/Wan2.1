@@ -405,7 +405,7 @@ def generate(args):
             # 20250226 pftq: if multiple videos per batch, change the filename index
             if args.batch_size > 1:
                 if batch_index == 0: args.save_file = args.save_file.replace(".mp4", "__"+str(batch_index+1)+".mp4")
-                else: args.save_file = args.save_file.replace("__"+str(batch_index)+".mp4", str(batch_index+1)+".mp4")
+                else: args.save_file = args.save_file.replace("__"+str(batch_index)+".mp4", "__"+str(batch_index+1)+".mp4")
             
             if "t2i" in args.task:
                 logging.info(f"Saving generated image to {args.save_file}")
