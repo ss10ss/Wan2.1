@@ -261,7 +261,6 @@ class WanT2V:
         if offload_model:
             gc.collect()
             torch.cuda.synchronize()
-            torch.cuda.empty_cache()
         if dist.is_initialized():
             dist.barrier()
 
