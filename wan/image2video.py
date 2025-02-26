@@ -205,7 +205,7 @@ class WanI2V:
             device=self.device)
 
         #20250226 fix noise assuming frames hardcoded at 81 (21 latent frames)
-        latent_frame_num = (frame_num - 1) // self.vae_stride[0] + 1
+        latent_frame_num = (F - 1) // self.vae_stride[0] + 1
         noise = torch.randn(16, latent_frame_num, lat_h, lat_w, dtype=torch.float32, generator=seed_g, device=self.device)
 
         #msk = torch.ones(1, 81, lat_h, lat_w, device=self.device)
