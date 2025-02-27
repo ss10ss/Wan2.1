@@ -28,6 +28,7 @@ In this repository, we present **Wan2.1**, a comprehensive and open suite of vid
 ## 🔥 Latest News!!
 
 * Feb 25, 2025: 👋 We've released the inference code and weights of Wan2.1.
+* Feb 27, 2025: 👋 Wan2.1 has been integrated into [ComfyUI](https://comfyanonymous.github.io/ComfyUI_examples/wan/). Enjoy!
 
 
 ## 📑 Todo List
@@ -35,14 +36,15 @@ In this repository, we present **Wan2.1**, a comprehensive and open suite of vid
     - [x] Multi-GPU Inference code of the 14B and 1.3B models
     - [x] Checkpoints of the 14B and 1.3B models
     - [x] Gradio demo
+    - [x] ComfyUI integration
     - [ ] Diffusers integration
-    - [ ] ComfyUI integration
 - Wan2.1 Image-to-Video
     - [x] Multi-GPU Inference code of the 14B model
     - [x] Checkpoints of the 14B model
     - [x] Gradio demo
+    - [X] ComfyUI integration
     - [ ] Diffusers integration
-    - [ ] ComfyUI integration
+    
 
 
 ## Quickstart
@@ -79,6 +81,11 @@ pip install "huggingface_hub[cli]"
 huggingface-cli download Wan-AI/Wan2.1-T2V-14B --local-dir ./Wan2.1-T2V-14B
 ```
 
+Download models using modelscope-cli:
+```
+pip install modelscope
+modelscope download Wan-AI/Wan2.1-T2V-14B --local_dir ./Wan2.1-T2V-14B
+```
 #### Run Text-to-Video Generation
 
 This repository supports two Text-to-Video models (1.3B and 14B) and two resolutions (480P and 720P). The parameters and configurations for these models are as follows:
@@ -324,7 +331,7 @@ We test the computational efficiency of different **Wan2.1** models on different
 
 
 ## Community Contributions
-- [DiffSynth-Studio](https://github.com/modelscope/DiffSynth-Studio) provides more support for Wan, including video-to-video, FP8 quantization, VRAM optimization, LoRA training, and more. Please refer to [their examples](https://github.com/modelscope/DiffSynth-Studio/tree/main/examples/wanvideo).
+- [DiffSynth-Studio](https://github.com/modelscope/DiffSynth-Studio) provides more support for **Wan2.1**, including video-to-video, FP8 quantization, VRAM optimization, LoRA training, and more. Please refer to [their examples](https://github.com/modelscope/DiffSynth-Studio/tree/main/examples/wanvideo).
 
 -------
 
