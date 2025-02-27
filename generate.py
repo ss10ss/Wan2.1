@@ -194,6 +194,13 @@ def _parse_args():
         default=1,
         help="Number of videos per run without reloading the model again.")
 
+    # 20250227 pftq: variety batch with different CFG/steps each video, labeled in filename.
+    parser.add_argument(
+        "--variety_batch",
+        action="store_true",
+        default=False,
+        help="Different CFG/steps each video, labeled in filename.")
+
     args = parser.parse_args()
 
     _validate_args(args)
@@ -398,7 +405,21 @@ def generate(args):
                     t5_cpu=args.t5_cpu,
                 )
                 
-            logging.info("Generating video...")
+            
+            # 20250227 pftq: variety batch
+            if args.variety_batch and batch_index > 0:
+                args.sample_guide_scale = args.sample_guide_scale + 0.5
+                if args.sample_guide_scale > 10:
+                    args.sample_guide_scale = 3
+                    args.sample_steps = args.sample_steps + 10
+                if args.sample_steps > 150:
+                    args.sample_stemps = 50
+                args.save_file = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_wan-server_CFG-"+str(args.sample_guide_scale)+"_steps-"+str(args.sample_steps)+"_"+str(args.ulysses_size)+"-GPUs-"+str(args.frame_num)+"f.mp4"
+                logging.info("Generating video... "+args.save_file)
+                
+            else: 
+                logging.info("Generating video...")
+            
             video = wan_i2v.generate(
                 args.prompt,
                 img,
