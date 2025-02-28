@@ -204,4 +204,7 @@ if __name__ == '__main__':
     print("done", flush=True)
 
     demo = gradio_interface()
-    demo.launch(server_name="0.0.0.0", share=False, server_port=7860)
+    if os.environ['WAN_USER'] and os.environ['WAN_PWD']:
+        demo.launch(server_name="0.0.0.0", share=False, server_port=7860, auth=(os.environ['WAN_USER'], os.environ['WAN_PWD']))
+    else:
+        demo.launch(server_name="0.0.0.0", share=False, server_port=7860)
