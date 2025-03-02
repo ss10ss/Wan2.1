@@ -1,4 +1,7 @@
 # Copyright 2024-2025 The Alibaba Wan Team Authors. All rights reserved.
+# Changelog:
+# 2025-03-01: Added Ollama support for prompt extension
+
 import argparse
 from datetime import datetime
 import logging
@@ -14,7 +17,7 @@ from PIL import Image
 
 import wan
 from wan.configs import WAN_CONFIGS, SIZE_CONFIGS, MAX_AREA_CONFIGS, SUPPORTED_SIZES
-from wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander
+from wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander, OllamaPromptExpander
 from wan.utils.utils import cache_video, cache_image, str2bool
 
 EXAMPLE_PROMPT = {
@@ -145,8 +148,13 @@ def _parse_args():
         "--prompt_extend_method",
         type=str,
         default="local_qwen",
-        choices=["dashscope", "local_qwen"],
+        choices=["dashscope", "local_qwen", "ollama"],
         help="The prompt extend method to use.")
+    parser.add_argument(
+        "--ollama_api_url",
+        type=str,
+        default="http://localhost:11434",
+        help="The URL of the Ollama API (only used with ollama method).")
     parser.add_argument(
         "--prompt_extend_model",
         type=str,
@@ -254,6 +262,11 @@ def generate(args):
                 model_name=args.prompt_extend_model,
                 is_vl="i2v" in args.task,
                 device=rank)
+        elif args.prompt_extend_method == "ollama":
+            prompt_expander = OllamaPromptExpander(
+                model_name=args.prompt_extend_model,
+                api_url=args.ollama_api_url,
+                is_vl="i2v" in args.task)
         else:
             raise NotImplementedError(
                 f"Unsupport prompt_extend_method: {args.prompt_extend_method}")
@@ -381,8 +394,7 @@ def generate(args):
     if rank == 0:
         if args.save_file is None:
             formatted_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-            formatted_prompt = args.prompt.replace(" ", "_").replace("/",
-                                                                     "_")[:50]
+            formatted_prompt = args.prompt.replace(" ", "_").replace("/", "_")[:50]
             suffix = '.png' if "t2i" in args.task else '.mp4'
             args.save_file = f"{args.task}_{args.size}_{args.ulysses_size}_{args.ring_size}_{formatted_prompt}_{formatted_time}" + suffix
 

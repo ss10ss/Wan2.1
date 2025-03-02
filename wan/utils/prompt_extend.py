@@ -1,16 +1,21 @@
 # Copyright 2024-2025 The Alibaba Wan Team Authors. All rights reserved.
+# Changelog:
+# 2025-03-01: Added OllamaPromptExpander class to support prompt extension using Ollama API
 import json
 import math
 import os
 import random
 import sys
 import tempfile
+import base64
 from dataclasses import dataclass
 from http import HTTPStatus
 from typing import Optional, Union
+from io import BytesIO
 
 import dashscope
 import torch
+import requests
 from PIL import Image
 
 try:
@@ -455,6 +460,138 @@ class QwenPromptExpander(PromptExpander):
             message=json.dumps({"content": expanded_prompt},
                                ensure_ascii=False))
 
+
+class OllamaPromptExpander(PromptExpander):
+    def __init__(self,
+                 model_name=None,
+                 api_url="http://localhost:11434",
+                 is_vl=False,
+                 device=0,
+                 **kwargs):
+        """
+        Args:
+            model_name: The Ollama model to use (e.g., 'llama2', 'mistral', etc.)
+            api_url: The URL of the Ollama API
+            is_vl: A flag indicating whether the task involves visual-language processing
+            device: The device to use (not used for Ollama as it's API-based)
+            **kwargs: Additional keyword arguments
+        """
+        if model_name is None:
+            model_name = "llama2" if not is_vl else "llava"
+        super().__init__(model_name, is_vl, device, **kwargs)
+        self.api_url = api_url.rstrip('/')
+
+    def extend(self, prompt, system_prompt, seed=-1, *args, **kwargs):
+        """
+        Extend a text prompt using Ollama API.
+        
+        Args:
+            prompt: The input prompt to extend
+            system_prompt: The system prompt to guide the extension
+            seed: Random seed for reproducibility (not used by Ollama)
+            
+        Returns:
+            PromptOutput: The extended prompt and metadata
+        """
+        try:
+            # Format the message for Ollama API
+            payload = {
+                "model": self.model_name,
+                "prompt": prompt,
+                "system": system_prompt,
+                "stream": False
+            }
+            
+            # Call Ollama API
+            response = requests.post(f"{self.api_url}/api/generate", json=payload)
+            response.raise_for_status()
+            
+            # Parse the response
+            result = response.json()
+            expanded_prompt = result.get("response", "")
+            
+            return PromptOutput(
+                status=True,
+                prompt=expanded_prompt,
+                seed=seed,
+                system_prompt=system_prompt,
+                message=json.dumps(result, ensure_ascii=False)
+            )
+        except Exception as e:
+            return PromptOutput(
+                status=False,
+                prompt=prompt,
+                seed=seed,
+                system_prompt=system_prompt,
+                message=str(e)
+            )
+
+    def extend_with_img(self,
+                       prompt,
+                       system_prompt,
+                       image: Union[Image.Image, str] = None,
+                       seed=-1,
+                       *args,
+                       **kwargs):
+        """
+        Extend a prompt with an image using Ollama API.
+        
+        Args:
+            prompt: The input prompt to extend
+            system_prompt: The system prompt to guide the extension
+            image: The input image (PIL Image or path)
+            seed: Random seed for reproducibility (not used by Ollama)
+            
+        Returns:
+            PromptOutput: The extended prompt and metadata
+        """
+        try:
+            # Convert image to base64
+            if isinstance(image, str):
+                # If image is a file path, read it
+                with open(image, "rb") as img_file:
+                    image_data = img_file.read()
+            else:
+                # If image is a PIL Image, convert to bytes
+                buffer = BytesIO()
+                image.save(buffer, format="PNG")
+                image_data = buffer.getvalue()
+            
+            # Encode image to base64
+            base64_image = base64.b64encode(image_data).decode("utf-8")
+            
+            # Format the message for Ollama API
+            payload = {
+                "model": self.model_name,
+                "prompt": prompt,
+                "system": system_prompt,
+                "images": [base64_image],
+                "stream": False
+            }
+            
+            # Call Ollama API
+            response = requests.post(f"{self.api_url}/api/generate", json=payload)
+            response.raise_for_status()
+            
+            # Parse the response
+            result = response.json()
+            expanded_prompt = result.get("response", "")
+            
+            return PromptOutput(
+                status=True,
+                prompt=expanded_prompt,
+                seed=seed,
+                system_prompt=system_prompt,
+                message=json.dumps(result, ensure_ascii=False)
+            )
+        except Exception as e:
+            return PromptOutput(
+                status=False,
+                prompt=prompt,
+                seed=seed,
+                system_prompt=system_prompt,
+                message=str(e)
+            )
 
 if __name__ == "__main__":
 

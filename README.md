@@ -170,6 +170,31 @@ DASH_API_KEY=your_key python generate.py  --task t2v-14B --size 1280*720 --ckpt_
 ```
 python generate.py  --task t2v-14B --size 1280*720 --ckpt_dir ./Wan2.1-T2V-14B --prompt "Two anthropomorphic cats in comfy boxing gear and bright gloves fight intensely on a spotlighted stage" --use_prompt_extend --prompt_extend_method 'local_qwen' --prompt_extend_target_lang 'ch'
 ```
+- Using Ollama for extension (Local API).
+  - Ensure Ollama is installed and running
+  - Pull your desired model: `ollama pull qwen2.5`
+  - The model name is case-sensitive and should match exactly what you pulled in Ollama
+  - For text-to-video tasks:
+    ```bash
+    python generate.py --task t2v-14B --size 1280*720 --ckpt_dir ./Wan2.1-T2V-14B \
+      --prompt "Two anthropomorphic cats in comfy boxing gear and bright gloves fight intensely on a spotlighted stage" \
+      --use_prompt_extend \
+      --prompt_extend_method 'ollama' \
+      --prompt_extend_model 'qwen2.5'
+    ```
+  - For image-to-video tasks:
+    ```bash
+    python generate.py --task i2v-14B --size 1280*720 --ckpt_dir ./Wan2.1-I2V-14B-720P \
+      --image examples/i2v_input.JPG \
+      --prompt "Your prompt here" \
+      --use_prompt_extend \
+      --prompt_extend_method 'ollama' \
+      --prompt_extend_model 'qwen2.5'
+    ```
+  - Optional: Customize the Ollama API URL if not using default (http://localhost:11434):
+    ```bash
+    python generate.py [...other args...] --ollama_api_url 'http://your-ollama-server:11434'
+    ```
 
 ##### (3) Running local gradio
 
