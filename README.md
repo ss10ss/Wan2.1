@@ -1,4 +1,4 @@
-# Wan2.1
+# Wan2.1 S
 
 <p align="center">
     <img src="assets/logo.png" width="400"/>
