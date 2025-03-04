@@ -298,8 +298,6 @@ class WanT2V:
                 timestep = [t]
 
                 timestep = torch.stack(timestep)
-
-                self.model.to(self.device)
                 noise_pred_cond = self.model(
                     latent_model_input, t=timestep, **arg_c)[0]
                 noise_pred_uncond = self.model(
