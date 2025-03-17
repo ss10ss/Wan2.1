@@ -50,6 +50,9 @@ generate.py  \
 --image "image.jpg" \
 --prompt ""
 ```
+
+Original Wan 2.1 Repo: https://github.com/Wan-Video/Wan2.1
+
   <hr >
 # Wan2.1
 
