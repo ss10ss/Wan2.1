@@ -351,8 +351,20 @@ def generate(args):
                     t5_cpu=args.t5_cpu,
                 )
     
-            logging.info(
-                f"Generating {'image' if 't2i' in args.task else 'video'} ...")
+            # 20250227 pftq: variety batch
+            if args.variety_batch and batch_index > 0:
+                args.sample_guide_scale = args.sample_guide_scale + 1
+                if args.sample_guide_scale > 10:
+                    args.sample_guide_scale = 3
+                    args.sample_steps = args.sample_steps + 10
+                if args.sample_steps > 150:
+                    args.sample_stemps = 50
+                args.save_file = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + "_wan-server_"+str(args.frame_num)+"f_CFG-"+str(args.sample_guide_scale)+"_steps-"+str(args.sample_steps)+"_"+str(args.ulysses_size)+"-GPUs.mp4"
+                logging.info("Generating video... "+args.save_file)
+                
+            else: 
+                logging.info("Generating video...")
+                
             video = wan_t2v.generate(
                 args.prompt,
                 size=SIZE_CONFIGS[args.size],
