@@ -1,3 +1,56 @@
+# Wan2.1 Custom Fork for Fixes/Changes
+- Fixed 81-frame-limit hard-coded.
+- Added "--batch_size" flag option for multiple videos without reloading the model.
+- Added "--variety_batch" flag option for different CFG/steps per video.
+
+Example prompt (1-GPU):
+```
+CFG=3
+Steps=30
+Frames=48
+Batch=10
+python generate.py  \
+--task i2v-14B \
+--size 1280*720 \
+--ckpt_dir ./Wan2.1-I2V-14B-720P \
+--offload_model True \
+--t5_cpu \
+--frame_num $Frames \
+--sample_guide_scale $CFG \
+--sample_steps $Steps \
+--save_file "$(date '+%Y-%m-%d_%H-%M-%S')_wan-server_960-${Frames}f_cfg-${CFG}_steps-${Steps}.mp4" \
+--batch_size $Batch \
+--variety_batch \
+--image "image.jpg" \
+--prompt ""
+```
+
+Example prompt for Multi-GPU:
+```
+GPUs=8
+CFG=3
+Steps=50
+Frames=161
+Batch=30
+torchrun --nproc_per_node=$GPUs --master_port=12345 \
+generate.py  \
+--task i2v-14B \
+--size 1280*720 \
+--ckpt_dir ./Wan2.1-I2V-14B-720P \
+--dit_fsdp \
+--t5_fsdp \
+--ulysses_size $GPUs \
+--ring_size 1 \
+--frame_num $Frames \
+--sample_guide_scale $CFG \
+--sample_steps $Steps \
+--save_file "$(date '+%Y-%m-%d_%H-%M-%S')_wan-server_960-${Frames}f_cfg-${CFG}_steps-${Steps}_${GPUs}-GPUs.mp4" \
+--batch_size $Batch \
+--variety_batch \
+--image "image.jpg" \
+--prompt ""
+```
+  <hr >
 # Wan2.1
 
 <p align="center">
