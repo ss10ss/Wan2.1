@@ -2,6 +2,7 @@
 - Fixed 81-frame-limit hard-coded.
 - Added "--batch_size" flag option for multiple videos without reloading the model.
 - Added "--variety_batch" flag option for different CFG/steps per video.
+- Exposed optional "--negative_prompt" (defaults used if left blank)
 
 Example prompt (1-GPU):
 ```
@@ -22,7 +23,8 @@ python generate.py  \
 --batch_size $Batch \
 --variety_batch \
 --image "image.jpg" \
---prompt ""
+--prompt "" \
+--negative_prompt ""
 ```
 
 Example prompt for Multi-GPU:
@@ -48,7 +50,8 @@ generate.py  \
 --batch_size $Batch \
 --variety_batch \
 --image "image.jpg" \
---prompt ""
+--prompt "" \
+--negative_prompt ""
 ```
 
 Original Wan 2.1 Repo: https://github.com/Wan-Video/Wan2.1
