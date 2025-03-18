@@ -7,7 +7,7 @@ name = "wan"
 version = "2.1.0"
 description = "Wan: Open and Advanced Large-Scale Video Generative Models"
 authors = [
-    { name = "Wan Team", discord = "https://discord.gg/p5XbdQV7" }
+    { name = "Wan Team", email = "wan.ai@alibabacloud.com" }
 ]
 license = { file = "LICENSE.txt" }
 readme = "README.md"
