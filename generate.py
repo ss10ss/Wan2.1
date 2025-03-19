@@ -212,7 +212,7 @@ def _parse_args():
     parser.add_argument(
         "--vae_tiling",
         type=int,
-        default=0,
+        default=256,
         help="VAE tiling to reduce VRAM use.")
 
     args = parser.parse_args()
