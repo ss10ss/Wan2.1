@@ -17,6 +17,8 @@ from wan.configs import WAN_CONFIGS, SIZE_CONFIGS, MAX_AREA_CONFIGS, SUPPORTED_S
 from wan.utils.prompt_extend import DashScopePromptExpander, QwenPromptExpander
 from wan.utils.utils import cache_video, cache_image, str2bool
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(name)s:%(funcName)s:%(lineno)d - %(message)s')
+
 EXAMPLE_PROMPT = {
     "t2v-1.3B": {
         "prompt": "Two anthropomorphic cats in comfy boxing gear and bright gloves fight intensely on a spotlighted stage.",
@@ -206,6 +208,13 @@ def _parse_args():
         default=False,
         help="Different CFG/steps each video, labeled in filename.")
 
+    # 20250317 pftq: VAE tiling implementation from deepbeepmeep/WanGP
+    parser.add_argument(
+        "--vae_tiling",
+        type=int,
+        default=0,
+        help="VAE tiling to reduce VRAM use.")
+
     args = parser.parse_args()
 
     _validate_args(args)
@@ -305,12 +314,20 @@ def generate(args):
     else:
         seeds = [args.base_seed if args.base_seed >= 0 else random.randint(0, sys.maxsize)]
         seeds.extend(random.randint(0, sys.maxsize) for _ in range(args.batch_size - 1))
-        
+
+    # 20250316 pftq: VAE Tiling from deepbeepmeep
+    VAE_tile_size = 0
+    if args.vae_tiling> 0 and args.vae_tiling%64==0:
+        VAE_tile_size = args.vae_tiling
+    logging.info('Using VAE tile size of ' + str( VAE_tile_size))
+    
     for batch_index in range(args.batch_size):
         if batch_index > 0:
             args.base_seed = seeds[batch_index] 
         if args.batch_size > 1:
             logging.info("Batch size: "+str(args.batch_size)+" | Video #"+str(batch_index+1))
+
+        args.base_seed = 42 # for testing
         
         if "t2v" in args.task or "t2i" in args.task:
             if args.prompt is None:
@@ -375,7 +392,8 @@ def generate(args):
                 guide_scale=args.sample_guide_scale,
                 seed=args.base_seed,
                 offload_model=args.offload_model,
-                n_prompt=args.negative_prompt # 20250316 pftq: Optional negative prompt
+                n_prompt=args.negative_prompt, # 20250316 pftq: Optional negative prompt
+                VAE_tile_size=VAE_tile_size, # 20250316 pftq: VAE Tiling from deepbeepmeep/WanGP
             )
     
         else:
@@ -446,11 +464,12 @@ def generate(args):
                 frame_num=args.frame_num,
                 shift=args.sample_shift,
                 sample_solver=args.sample_solver,
-                sampling_steps=args.sample_steps,
-                guide_scale=args.sample_guide_scale,
+                sampling_steps=args.sample_steps+stepsdelta,
+                guide_scale=args.sample_guide_scale+cfgdelta,
                 seed=args.base_seed,
                 offload_model=args.offload_model,
-                n_prompt=args.negative_prompt # 20250316 pftq: Optional negative prompt
+                n_prompt=args.negative_prompt, # 20250316 pftq: Optional negative prompt
+                VAE_tile_size=VAE_tile_size, # 20250316 pftq: VAE Tiling from deepbeepmeep/WanGP
             )
     
         if rank == 0:
