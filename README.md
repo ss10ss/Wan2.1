@@ -1,8 +1,9 @@
-# Wan2.1 Custom Fork for Fixes/Changes
+# Wan2.1 Custom Fork for Fixes/Improvements
 - Fixed 81-frame-limit hard-coded.
 - Added "--batch_size" flag option for multiple videos without reloading the model.
 - Added "--variety_batch" flag option for different CFG/steps per video.
 - Exposed optional "--negative_prompt" (defaults used if left blank)
+- VAE tiling to reduce VRAM "--vae_tiling 256" (default value 256).  Credits deepbeepmeep for implementation from WanGP.
 
 Example prompt (1-GPU):
 ```
@@ -22,6 +23,7 @@ python generate.py  \
 --save_file "$(date '+%Y-%m-%d_%H-%M-%S')_wan-server_960-${Frames}f_cfg-${CFG}_steps-${Steps}.mp4" \
 --batch_size $Batch \
 --variety_batch \
+--vae_tiling 256 \
 --image "image.jpg" \
 --prompt "" \
 --negative_prompt ""
@@ -49,6 +51,7 @@ generate.py  \
 --save_file "$(date '+%Y-%m-%d_%H-%M-%S')_wan-server_960-${Frames}f_cfg-${CFG}_steps-${Steps}_${GPUs}-GPUs.mp4" \
 --batch_size $Batch \
 --variety_batch \
+--vae_tiling 256 \
 --image "image.jpg" \
 --prompt "" \
 --negative_prompt ""
