@@ -137,7 +137,9 @@ class WanI2V:
                  guide_scale=5.0,
                  n_prompt="",
                  seed=-1,
-                 offload_model=True):
+                 offload_model=True,
+                 VAE_tile_size=0, # 20250316 pftq: vae tiling from deepbeepmeep/WanGP
+                ):
         r"""
         Generates video frames from input image and text prompt using diffusion process.
 
@@ -249,7 +251,9 @@ class WanI2V:
                 torch.zeros(3, F-1, h, w) # 20250226 pftq: fixed 80 being hardcoded frame-1
             ],
                          dim=1).to(self.device)
-        ])[0]
+        ]
+                           , VAE_tile_size # 20250316 pftq: VAE tiling from deepbeepmeep/WanGP
+                           )[0]
         y = torch.concat([msk, y])
 
         @contextmanager
