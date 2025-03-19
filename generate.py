@@ -464,8 +464,8 @@ def generate(args):
                 frame_num=args.frame_num,
                 shift=args.sample_shift,
                 sample_solver=args.sample_solver,
-                sampling_steps=args.sample_steps+stepsdelta,
-                guide_scale=args.sample_guide_scale+cfgdelta,
+                sampling_steps=args.sample_steps,
+                guide_scale=args.sample_guide_scale,
                 seed=args.base_seed,
                 offload_model=args.offload_model,
                 n_prompt=args.negative_prompt, # 20250316 pftq: Optional negative prompt
