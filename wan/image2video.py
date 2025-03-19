@@ -345,7 +345,9 @@ class WanI2V:
                 torch.cuda.empty_cache()
 
             if self.rank == 0:
-                videos = self.vae.decode(x0)
+                videos = self.vae.decode(x0
+                                        , VAE_tile_size # 20250316 pftq: VAE tiling from deepbeepmeep/WanGP
+                                        )
 
         del noise, latent
         del sample_scheduler
