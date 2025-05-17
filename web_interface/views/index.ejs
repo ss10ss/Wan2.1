@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+
+    <main class="container my-5">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Wan2.1 Video Generation</h1>
+            <p class="lead">Open and Advanced Large-Scale Video Generative Model</p>
+            <hr class="my-4">
+            <p>Choose one of the following generation modes:</p>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Text to Video</h5>
+                            <p class="card-text">Generate videos from textual descriptions.</p>
+                            <a href="/text-to-video" class="btn btn-primary">Try It</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Image to Video</h5>
+                            <p class="card-text">Convert still images into dynamic videos.</p>
+                            <a href="/image-to-video" class="btn btn-primary">Try It</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">First-Last Frame to Video</h5>
+                            <p class="card-text">Create videos from first and last frames.</p>
+                            <a href="/fl-to-video" class="btn btn-primary">Try It</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <h2>About Wan2.1</h2>
+            <p>Wan2.1 is a comprehensive and open suite of video foundation models that pushes the boundaries of video generation with the following features:</p>
+            <ul>
+                <li><strong>SOTA Performance:</strong> Consistently outperforms existing open-source models and state-of-the-art commercial solutions.</li>
+                <li><strong>Consumer-grade GPU Support:</strong> The T2V-1.3B model requires only 8.19 GB VRAM, compatible with most consumer-grade GPUs.</li>
+                <li><strong>Multiple Tasks:</strong> Excels in Text-to-Video, Image-to-Video, Video Editing, Text-to-Image, and Video-to-Audio.</li>
+                <li><strong>Visual Text Generation:</strong> First video model capable of generating both Chinese and English text.</li>
+                <li><strong>Powerful Video VAE:</strong> Exceptional efficiency and performance, encoding and decoding 1080P videos of any length.</li>
+            </ul>
+        </div>
+    </main>
+
+    <%- include('./partials/footer') %>
+    <%- include('./partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+
+    <main class="container my-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h1 class="h3 mb-0">First-Last Frame to Video Generation</h1>
+            </div>
+            <div class="card-body">
+                <% if(message && message.length > 0) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= message %>
+                </div>
+                <% } %>
+                <% if(error && error.length > 0) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+                <% } %>
+
+                <form action="/fl-to-video" method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstFrame" class="form-label">Upload First Frame</label>
+                            <input class="form-control" type="file" id="firstFrame" name="firstFrame" accept="image/*" required>
+                            <div class="form-text">Select the first frame image (JPG, PNG, max 10MB)</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="lastFrame" class="form-label">Upload Last Frame</label>
+                            <input class="form-control" type="file" id="lastFrame" name="lastFrame" accept="image/*" required>
+                            <div class="form-text">Select the last frame image (JPG, PNG, max 10MB)</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="resolution" class="form-label">Resolution</label>
+                            <select class="form-select" id="resolution" name="resolution" required>
+                                <option value="512*320">512×320</option>
+                                <option value="512*512">512×512</option>
+                                <option value="640*384">640×384</option>
+                                <option value="768*432">768×432</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="steps" class="form-label">Steps</label>
+                            <input type="number" class="form-control" id="steps" name="steps" min="1" max="100" value="25" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="guideScale" class="form-label">Guidance Scale</label>
+                            <input type="number" class="form-control" id="guideScale" name="guideScale" min="1" max="20" step="0.5" value="8.5" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="seed" class="form-label">Seed (optional, -1 for random)</label>
+                        <input type="number" class="form-control" id="seed" name="seed" value="-1">
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div id="firstFramePreview" class="d-none mt-2">
+                                <h5>First Frame Preview:</h5>
+                                <img id="previewFirst" src="#" alt="Preview" style="max-width: 100%; max-height: 300px;" class="img-thumbnail">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="lastFramePreview" class="d-none mt-2">
+                                <h5>Last Frame Preview:</h5>
+                                <img id="previewLast" src="#" alt="Preview" style="max-width: 100%; max-height: 300px;" class="img-thumbnail">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Generate Video</button>
+                                <div class="text-center mt-3">
+                                    <div class="spinner-border text-primary d-none" id="loading-spinner" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p id="loading-text" class="d-none">Generating video... This may take several minutes depending on your hardware.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <%- include('./partials/footer') %>
+    
+    <%- include('./partials/scripts') %>
+    <script>
+        document.getElementById('firstFrame').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('previewFirst').src = event.target.result;
+                    document.getElementById('firstFramePreview').classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('lastFrame').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('previewLast').src = event.target.result;
+                    document.getElementById('lastFramePreview').classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            document.getElementById('loading-spinner').classList.remove('d-none');
+            document.getElementById('loading-text').classList.remove('d-none');
+        });
+    </script>
+</body>
+</html>

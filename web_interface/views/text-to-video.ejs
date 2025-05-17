@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+
+    <main class="container my-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h1 class="h3 mb-0">Text to Video Generation</h1>
+            </div>
+            <div class="card-body">
+                <% if(message && message.length > 0) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= message %>
+                </div>
+                <% } %>
+                <% if(error && error.length > 0) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+                <% } %>
+
+                <form action="/text-to-video" method="POST">
+                    <div class="mb-3">
+                        <label for="prompt" class="form-label">Prompt</label>
+                        <textarea class="form-control" id="prompt" name="prompt" rows="3" required placeholder="Enter detailed description of the video you want to generate"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="resolution" class="form-label">Resolution</label>
+                            <select class="form-select" id="resolution" name="resolution" required>
+                                <option value="512*320">512×320</option>
+                                <option value="512*512">512×512</option>
+                                <option value="640*384">640×384</option>
+                                <option value="768*432">768×432</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <label for="steps" class="form-label">Steps</label>
+                            <input type="number" class="form-control" id="steps" name="steps" min="1" max="100" value="30" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="guideScale" class="form-label">Guidance Scale</label>
+                            <input type="number" class="form-control" id="guideScale" name="guideScale" min="1" max="20" step="0.5" value="7.5" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="shiftScale" class="form-label">Shift Scale</label>
+                            <input type="number" class="form-control" id="shiftScale" name="shiftScale" min="0" max="10" step="0.5" value="1.0" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="seed" class="form-label">Seed (optional, -1 for random)</label>
+                            <input type="number" class="form-control" id="seed" name="seed" value="-1">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="negativePrompt" class="form-label">Negative Prompt (optional)</label>
+                        <textarea class="form-control" id="negativePrompt" name="negativePrompt" rows="2" placeholder="Elements you don't want in your video"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Generate Video</button>
+                                <div class="text-center mt-3">
+                                    <div class="spinner-border text-primary d-none" id="loading-spinner" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p id="loading-text" class="d-none">Generating video... This may take several minutes depending on your hardware.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <%- include('./partials/footer') %>
+    
+    <%- include('./partials/scripts') %>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            document.getElementById('loading-spinner').classList.remove('d-none');
+            document.getElementById('loading-text').classList.remove('d-none');
+        });
+    </script>
+</body>
+</html>

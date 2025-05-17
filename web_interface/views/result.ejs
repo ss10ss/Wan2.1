@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+
+    <main class="container my-5">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h1 class="h3 mb-0">Generation Result</h1>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success" role="alert">
+                    Your video has been generated successfully!
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Generated Video</h5>
+                            </div>
+                            <div class="card-body">
+                                <video controls autoplay loop class="img-fluid w-100">
+                                    <source src="<%= videoPath %>" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+
+                        <% if (locals.prompt) { %>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Prompt</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><%= prompt %></p>
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <% if (locals.imagePath) { %>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Source Image</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <img src="<%= imagePath %>" alt="Source Image" class="img-fluid" style="max-height: 300px;">
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <% if (locals.firstFramePath && locals.lastFramePath) { %>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Source Frames</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <h6>First Frame</h6>
+                                        <img src="<%= firstFramePath %>" alt="First Frame" class="img-fluid" style="max-height: 300px;">
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <h6>Last Frame</h6>
+                                        <img src="<%= lastFramePath %>" alt="Last Frame" class="img-fluid" style="max-height: 300px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="/" class="btn btn-primary">Back to Home</a>
+                            <a href="<%= videoPath %>" class="btn btn-success" download>Download Video</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('./partials/footer') %>
+    <%- include('./partials/scripts') %>
+</body>
+</html>
