@@ -304,13 +304,6 @@ def usp_attn_forward(self,
             value=half(v),
             window_size=self.window_size)
 
-    x = xFuserLongContextAttention()(
-        None,
-        query=half(q),
-        key=half(k),
-        value=half(v),
-        window_size=self.window_size)
-
     # TODO: padding after attention.
     # x = torch.cat([x, x.new_zeros(b, s - x.size(1), n, d)], dim=1)
 
