@@ -289,7 +289,7 @@ def usp_attn_forward(self,
     #     k = torch.cat([u[:l] for u, l in zip(k, k_lens)]).unsqueeze(0)
     #     v = torch.cat([u[:l] for u, l in zip(v, k_lens)]).unsqueeze(0)
 
-    if FLASH_ATTN_3_AVAILABLE:
+    if hasattr(self, 'enable_fa3') and self.enable_fa3 and FLASH_ATTN_3_AVAILABLE:
         x = xFuserLongContextAttention(attn_type=AttnType.FA3)(
             None,
             query=half(q),
