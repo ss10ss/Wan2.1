@@ -8,6 +8,7 @@ from diffusers.configuration_utils import ConfigMixin, register_to_config
 from diffusers.models.modeling_utils import ModelMixin
 
 from .attention import flash_attention
+from wan.taylorseer.cache_functions import cache_init
 
 __all__ = ['WanModel']
 
@@ -506,8 +507,11 @@ class WanModel(ModelMixin, ConfigMixin):
             self.img_emb = MLPProj(1280, dim, flf_pos_emb=model_type == 'flf2v')
 
         # initialize weights
-        self.init_weights()
+        self.init_weights()        
+        self.cache_init()
 
+    def cache_init(self):
+        self.cache_dic, self.current = cache_init(self)
     def forward(
         self,
         x,
